@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#0b5fa5">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>HS Code Finder – Konsultan Impor Indonesia</title>
+<style>
+:root{--bg:#f6f7f9;--card:#fff;--text:#1b2430;--muted:#5d6b7c;--line:#dde2e9;--accent:#0b5fa5;--accent-t:#fff;--soft:#e8f1fa;--ok:#1d7a46;--warn:#9a6200;--warnbg:#fff4de;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);color-scheme:light}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#10161d;--card:#18212b;--text:#e6ebf1;--muted:#96a3b3;--line:#2b3744;--accent:#5ab0ff;--accent-t:#06121f;--soft:#16293b;--ok:#5fd18d;--warn:#f0b755;--warnbg:#2c2414;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#10161d;--card:#18212b;--text:#e6ebf1;--muted:#96a3b3;--line:#2b3744;--accent:#5ab0ff;--accent-t:#06121f;--soft:#16293b;--ok:#5fd18d;--warn:#f0b755;--warnbg:#2c2414;color-scheme:dark}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font:15px/1.55 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+.wrap{max-width:880px;margin:0 auto;padding:20px 16px 48px}
+h1{font-size:1.5rem;margin:0 0 4px}
+.sub{color:var(--muted);margin:0 0 18px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:16px;margin-bottom:16px}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media(max-width:600px){.grid{grid-template-columns:1fr}}
+.full{grid-column:1/-1}
+label{display:block;font-weight:600;font-size:.85rem;margin-bottom:4px}
+label small{font-weight:400;color:var(--muted)}
+input,select,textarea{width:100%;padding:9px 10px;border:1px solid var(--line);border-radius:8px;background:var(--bg);color:var(--text);font:inherit}
+input:focus,select:focus,textarea:focus{outline:2px solid var(--accent);outline-offset:0}
+textarea{min-height:64px;resize:vertical}
+.sec{font-size:.8rem;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);margin:4px 0 10px;font-weight:700}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-top:14px}
+button{font:inherit;border-radius:8px;padding:10px 18px;cursor:pointer;border:1px solid var(--line);background:var(--card);color:var(--text)}
+button.primary{background:var(--accent);color:var(--accent-t);border-color:var(--accent);font-weight:700}
+button:disabled{opacity:.6;cursor:wait}
+.note{background:var(--warnbg);color:var(--text);border-left:4px solid var(--warn);padding:10px 12px;border-radius:6px;font-size:.88rem}
+.cand{border:1px solid var(--line);border-radius:10px;padding:14px;margin-bottom:12px;background:var(--card)}
+.cand.top{border-color:var(--accent);box-shadow:0 0 0 1px var(--accent)}
+.code{font:700 1.4rem ui-monospace,Menlo,Consolas,monospace;color:var(--accent)}
+.badge{display:inline-block;font-size:.75rem;padding:2px 8px;border-radius:99px;background:var(--soft);color:var(--accent);margin-left:6px;font-weight:700;vertical-align:middle}
+.bar{height:6px;background:var(--line);border-radius:4px;margin:8px 0;overflow:hidden}
+.bar i{display:block;height:100%;background:var(--ok)}
+.kv{margin:6px 0;font-size:.9rem}.kv b{color:var(--muted);font-weight:600}
+ul{margin:4px 0 0;padding-left:20px}
+h3{font-size:1rem;margin:0 0 8px}
+.err{color:#c0392b}
+.tag{display:inline-block;font-size:.72rem;background:var(--soft);color:var(--accent);padding:1px 7px;border-radius:5px;margin-right:4px}
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}@media(max-width:600px){.grid3{grid-template-columns:1fr 1fr}}
+.tbl{width:100%;border-collapse:collapse;margin-top:12px}.tbl td{padding:6px 4px;border-bottom:1px solid var(--line)}.tbl td:last-child{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}.tbl tr.t td{font-weight:700;color:var(--accent)}.tbl tr.s td{color:var(--muted)}
+.hitem{display:flex;gap:8px;margin-bottom:6px}.hbtn{flex:1;text-align:left;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.hx{padding:6px 12px}
+.seg{display:inline-flex;border:1px solid var(--line);border-radius:10px;overflow:hidden;margin:0 0 16px}.seg button{border:0;border-radius:0;padding:9px 20px}.seg button.on{background:var(--accent);color:var(--accent-t);font-weight:700}
+html{-webkit-text-size-adjust:100%}
+input,select,textarea{font-size:16px}
+button{min-height:44px}#hclear{min-height:0}
+.card,.cand{overflow-wrap:anywhere}
+.layout{display:flex;flex-direction:column}.colL,.colR{display:contents}
+#formcard{order:1}#out{order:2}#exp{order:3}#calc{order:4}#histcard{order:5}
+#out:empty{display:none}
+@media(max-width:959px){.actbar{position:sticky;bottom:env(safe-area-inset-bottom,0px);z-index:5;background:var(--card);border-top:1px solid var(--line);margin:14px -16px 0;padding:10px 16px}}
+@media(max-width:599px){.wrap{padding:14px 12px 40px}h1{font-size:1.3rem}.seg{display:flex;width:100%}.seg button{flex:1}.card{padding:14px 12px}.code{font-size:1.25rem}.actbar{margin:14px -12px 0;padding:10px 12px}.actbar button.primary{flex:1 1 100%}.tbl{font-size:.9rem}}
+@media(max-width:380px){.grid3{grid-template-columns:1fr}}
+@media(min-width:960px){.wrap{max-width:1200px;padding:28px 28px 56px}.layout{display:grid;grid-template-columns:minmax(400px,450px) minmax(0,1fr);gap:24px;align-items:start}.colL,.colR{display:block;min-width:0}.colL{position:sticky;top:12px;max-height:calc(100vh - 24px);overflow-y:auto;padding:2px}#out:empty{display:block;border:2px dashed var(--line);border-radius:12px;padding:40px 20px;text-align:center;color:var(--muted);margin-bottom:16px}#out:empty::before{content:'Hasil identifikasi HS Code akan tampil di sini.'}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>📦 HS Code Finder</h1>
+  <p class="sub">Asisten konsultan impor dan ekspor untuk menelusuri klasifikasi HS Code (BTKI 8 digit) berdasarkan deskripsi barang.</p>
+  <div class='seg'><button id='m_impor' class='on'>📥 Impor</button><button id='m_ekspor'>📤 Ekspor</button></div>
+
+  <div class="card">
+    <div class="sec">Data barang</div>
+    <div class="grid">
+      <div class="full"><label>Nama barang <small>(wajib)</small></label><input id="nama" placeholder="mis. Kursi kantor ergonomis"></div>
+      <div><label>Material / komposisi <small>(wajib)</small></label><input id="material" placeholder="mis. rangka baja, dudukan jaring poliester"></div>
+      <div><label>Ukuran / dimensi / berat</label><input id="ukuran" placeholder="mis. 60×60×110 cm, 12 kg"></div>
+      <div><label>Fungsi / kegunaan</label><input id="fungsi" placeholder="mis. tempat duduk untuk bekerja di kantor"></div>
+      <div><label id='lbl_negara'>Negara asal</label><input id="negara" placeholder="mis. Tiongkok"></div>
+      <div><label>Kategori barang</label><select id="kategori"></select></div>
+      <div><label>Bentuk / kondisi</label>
+        <select id="kondisi">
+          <option>Barang jadi, siap pakai</option>
+          <option>Bagian / suku cadang</option>
+          <option>Bahan baku / setengah jadi</option>
+          <option>Belum dirakit / CKD / SKD</option>
+          <option>Bekas</option>
+          <option>Set / kit (beberapa barang dalam satu paket)</option>
+        </select></div>
+    </div>
+    <div class="sec" style="margin-top:16px">Spesifikasi tambahan <small id="katlabel" style="text-transform:none"></small></div>
+    <div class="grid" id="extra"></div>
+    <div class="full" style="margin-top:12px"><label>Catatan lain <small>(merek, tipe, paket penjualan, dll.)</small></label><textarea id="catatan"></textarea></div>
+    <div class="row">
+      <button class="primary" id="go">🔍 Identifikasi HS Code</button>
+      <button id="contoh" type="button">Isi contoh</button>
+      <button id="reset" type="button">Reset</button>
+    </div>
+  </div>
+
+  <div id="out"></div>
+  <div id='exp' class='row' style='display:none;margin:0 0 16px'><button id='dlmd'>⬇️ Unduh laporan (.md)</button><button id='dlcsv'>⬇️ Unduh CSV</button><span id='exmsg' class='sub' style='margin:0'></span></div>
+
+  <div class='card' id='calc'>
+    <div class='sec' id='calctitle'>Kalkulator estimasi bea masuk &amp; pajak impor</div>
+    <div class='grid3'>
+      <div><label>Nilai barang (FOB)</label><input id='c_fob' inputmode='decimal' placeholder='mis. 10000'></div>
+      <div><label>Mata uang</label><select id='c_cur'><option>USD</option><option>EUR</option><option>CNY</option><option>SGD</option><option>JPY</option><option>IDR</option></select></div>
+      <div><label>Kurs NDPBM <small>(ke Rupiah)</small></label><input id='c_kurs' inputmode='decimal' placeholder='kurs pajak berlaku'></div>
+      <div><label>Freight</label><input id='c_frt' inputmode='decimal' placeholder='0'></div>
+      <div><label>Asuransi</label><input id='c_ins' inputmode='decimal' placeholder='0'></div>
+      <div><label>BM (%)</label><input id='c_bm' inputmode='decimal' placeholder='mis. 10'></div>
+      <div><label>BMAD/BMTP/lainnya (%)</label><input id='c_bmad' inputmode='decimal' placeholder='0'></div>
+      <div><label>PPN (%)</label><input id='c_ppn' inputmode='decimal' value='11'></div>
+      <div><label>PPh Pasal 22</label><select id='c_pph'><option value='2.5'>API – 2,5%</option><option value='7.5'>Non-API – 7,5%</option><option value='10'>Barang tidak dikuasai – 10%</option><option value='0'>Dibebaskan / SKB – 0%</option></select></div>
+    </div>
+    <div class='kv' id='bmhint' style='color:var(--muted)'>Isi tarif BM sesuai BTKI/INSW. Setelah identifikasi, BM terisi otomatis dari kandidat teratas.</div>
+    <div class='kv' style='color:var(--muted)'>PPN 11% adalah tarif efektif yang umum dipakai; ubah bila ketentuan berbeda.</div>
+    <div class='row'><button class='primary' id='c_go'>🧮 Hitung</button></div>
+    <div id='c_out'></div>
+  </div>
+
+  <div class='card' id='histcard' style='display:none'>
+    <div class='sec' style='display:flex;justify-content:space-between;align-items:center'>Riwayat pencarian <button id='hclear' style='padding:4px 10px;font-size:.8rem'>Hapus semua</button></div>
+    <div id='hist'></div>
+    <div class='kv' style='color:var(--muted)'>Tersimpan di browser ini saja (maksimal 30 pencarian terakhir).</div>
+  </div>
+
+  <div class="note">⚠️ Hasil ini adalah <b>rekomendasi awal</b>, bukan penetapan resmi. Pastikan verifikasi di BTKI terbaru melalui <b>insw.go.id</b> (Portal Tarif), dan bila ragu ajukan <b>penetapan klasifikasi (advance ruling)</b> ke DJBC. Kesalahan klasifikasi dapat berakibat denda administrasi dan kewajiban bea masuk tambahan. Perhatikan juga bahwa struktur HS direvisi (HS 2027 berlaku 1 Januari 2027), sehingga kode dapat berubah.</div>
+</div>
+
+<script>
+const KAT = {
+ "Mesin, peralatan listrik & elektronik":[["Tegangan / daya","mis. 220V, 500W"],["Jenis & merek/tipe","mis. laptop, router, pompa"],["Fitur utama","mis. nirkabel, kapasitas 5 L/menit"]],
+ "Tekstil, pakaian & alas kaki":[["Jenis rajutan / tenunan","mis. rajut (knit), tenun (woven)"],["Komposisi serat (%)","mis. 60% katun, 40% poliester"],["Pengguna & jenis","mis. pria, wanita, anak; kaos, jaket"]],
+ "Plastik, karet & turunannya":[["Jenis polimer","mis. PP, PVC, PET, silikon"],["Bentuk","mis. lembaran, granul, barang jadi"],["Tebal / ukuran / berat jenis","mis. 0,5 mm"]],
+ "Logam & produk logam":[["Jenis logam / paduan","mis. baja karbon, stainless 304, aluminium"],["Bentuk & proses","mis. pelat gulungan, dicor, dilas"],["Kadar karbon / tebal / lapisan","mis. galvanis, tebal 1,2 mm"]],
+ "Makanan, minuman & pertanian":[["Bentuk olahan","mis. segar, beku, kalengan, bubuk"],["Kadar (lemak/gula/alkohol)","mis. kadar lemak 26%"],["Kemasan & isi bersih","mis. kemasan ritel 250 g"]],
+ "Kimia, kosmetik & farmasi":[["Rumus / nama kimia (CAS)","mis. NaOH, CAS 1310-73-2"],["Kemurnian / konsentrasi","mis. 99%"],["Penggunaan akhir","mis. bahan baku industri, ritel"]],
+ "Kayu, kertas & furnitur":[["Jenis kayu / kertas","mis. jati, MDF, kertas kraft"],["Berat (gsm) / tebal","mis. 80 gsm"],["Pengolahan","mis. veneer, dirakit, belum dirakit"]],
+ "Kendaraan & suku cadang":[["Jenis kendaraan / komponen","mis. sepeda motor, kampas rem"],["Kapasitas mesin / daya","mis. 150 cc, motor listrik 3 kW"],["Tahun / kondisi","mis. 2024, baru"]],
+ "Alat kesehatan & laboratorium":[["Fungsi medis","mis. mengukur tekanan darah"],["Sekali pakai / berulang","mis. steril sekali pakai"],["Izin edar (Kemenkes)","mis. ada / belum"]],
+ "Mainan, olahraga & barang rumah tangga":[["Usia pengguna","mis. di atas 3 tahun"],["Cara kerja","mis. baterai, manual"],["Bahan dominan","mis. plastik, kain"]],
+ "Lainnya":[["Spesifikasi teknis penting","mis. kadar, kapasitas, standar"],["Proses pembuatan","mis. dicetak, dirakit, dilapis"],["Penggunaan akhir","mis. industri, ritel"]]
+};
+const $=id=>document.getElementById(id);
+const kat=$("kategori");
+Object.keys(KAT).forEach(k=>{const o=document.createElement("option");o.textContent=k;kat.appendChild(o)});
+function renderExtra(){
+  const box=$("extra");box.textContent="";
+  $("katlabel").textContent="— menyesuaikan kategori";
+  KAT[kat.value].forEach((f,i)=>{
+    const d=document.createElement("div");
+    const l=document.createElement("label");l.textContent=f[0];
+    const inp=document.createElement("input");inp.id="x"+i;inp.placeholder=f[1];inp.dataset.label=f[0];
+    d.appendChild(l);d.appendChild(inp);box.appendChild(d);
+  });
+}
+kat.addEventListener("change",renderExtra);renderExtra();
+
+$('reset').onclick=()=>{document.querySelectorAll('#nama,#material,#ukuran,#fungsi,#negara,#catatan,#extra input').forEach(e=>{e.value=''});$('out').textContent='';$('exp').style.display='none'};
+$("contoh").onclick=()=>{
+  $("nama").value="Kursi kantor ergonomis";$("material").value="Rangka baja, dudukan jaring poliester, roda nilon";
+  $("ukuran").value="60×60×110 cm, 12 kg";$("fungsi").value="Tempat duduk untuk bekerja di kantor, tinggi dapat diatur";
+  $("negara").value="Tiongkok";kat.value="Kayu, kertas & furnitur";renderExtra();
+  $("x0").value="Tidak ada kayu";$("x2").value="Dirakit sebagian, dikemas terpisah";
+};
+
+const SYS=`Anda adalah konsultan kepabeanan dan importir senior di Indonesia yang ahli klasifikasi barang menurut Harmonized System dan BTKI (Buku Tarif Kepabeanan Indonesia, 8 digit, berbasis AHTN). Tugas: tentukan HS Code paling tepat untuk barang yang dijelaskan pengguna, dengan menerapkan General Rules of Interpretation (GRI 1-6), Section/Chapter Notes, dan Explanatory Notes. Aturan:
+- Beri 1 sampai 3 kandidat, urut dari paling mungkin. Format kode "XXXX.XX.XX" (8 digit BTKI). Jika tidak yakin pada 8 digit, tulis yang yakin dan jelaskan di bidang "pembeda".
+- Jangan mengarang. Jika data kurang untuk menentukan, turunkan keyakinan dan isi "pertanyaan_lanjutan" dengan pertanyaan spesifik yang akan mengubah klasifikasi.
+- Tarif bea masuk: beri angka hanya bila Anda cukup yakin dan tandai sebagai indikatif; selain itu tulis "Cek BTKI/INSW". Bahas juga kemungkinan tarif preferensi FTA (ATIGA, ACFTA, dll.) bila relevan dengan negara asal.
+- Lartas: sebutkan kemungkinan ketentuan larangan/pembatasan (mis. Permendag, SNI wajib, BPOM, Kemenkes/alkes, Karantina, Kominfo/postel, ketentuan Pertek) yang perlu dicek. Tandai sebagai "kemungkinan".
+- Jawab dalam Bahasa Indonesia. Keluarkan HANYA JSON valid tanpa markdown dengan skema:
+{"ringkasan":string,"kandidat":[{"hs_code":string,"uraian":string,"keyakinan":number 0-100,"alasan":string,"gri":string,"pembeda":string,"tarif_bm":string}],"bab_catatan":string,"lartas":[string],"dokumen":[string],"pertanyaan_lanjutan":[string],"kesalahan_umum":string}`;
+
+function esc(s){const d=document.createElement("div");d.textContent=s==null?"":String(s);return d.innerHTML}
+function list(arr){return arr&&arr.length?"<ul>"+arr.map(x=>"<li>"+esc(x)+"</li>").join("")+"</ul>":"<div class='kv'>—</div>"}
+
+function render(r){
+  let h="<div class='card'><h3>Ringkasan</h3><div>"+esc(r.ringkasan)+"</div></div>";
+  (r.kandidat||[]).forEach((c,i)=>{
+    const k=Math.max(0,Math.min(100,Number(c.keyakinan)||0));
+    h+="<div class='cand"+(i===0?" top":"")+"'><div class='code'>"+esc(c.hs_code)+"<span class='badge'>"+(i===0?"Paling mungkin":"Alternatif "+i)+"</span></div>"
+     +"<div><b>"+esc(c.uraian)+"</b></div><div class='bar'><i style='width:"+k+"%'></i></div><div class='kv'><b>Keyakinan:</b> "+k+"%</div>"
+     +"<div class='kv'><b>Alasan:</b> "+esc(c.alasan)+"</div><div class='kv'><b>Dasar GRI:</b> "+esc(c.gri)+"</div>"
+     +"<div class='kv'><b>Pembeda dari kode lain:</b> "+esc(c.pembeda)+"</div><div class='kv'><b>"+(mode==='ekspor'?'Bea Keluar':'BM')+" (indikatif):</b> "+esc(c.tarif_bm)+"</div></div>";
+  });
+  h+="<div class='card'><h3>Catatan Bab / Section</h3><div>"+esc(r.bab_catatan)+"</div></div>";
+  h+="<div class='card'><h3>Kemungkinan Lartas / Perizinan</h3>"+list(r.lartas)+"</div>";
+  h+="<div class='card'><h3>Dokumen yang disiapkan</h3>"+list(r.dokumen)+"</div>";
+  if(r.pertanyaan_lanjutan&&r.pertanyaan_lanjutan.length)h+="<div class='card'><h3>Info tambahan untuk memperjelas klasifikasi</h3>"+list(r.pertanyaan_lanjutan)+"</div>";
+  if(r.kesalahan_umum)h+="<div class='card'><h3>Kesalahan umum pada barang ini</h3><div>"+esc(r.kesalahan_umum)+"</div></div>";
+  $("out").innerHTML=h;
+  $("out").scrollIntoView({behavior:"smooth",block:"start"});
+}
+
+let ctl=null;
+$("go").onclick=async()=>{
+  const nama=$("nama").value.trim(),mat=$("material").value.trim();
+  if(!nama||!mat){$("out").innerHTML="<div class='card err'>Nama barang dan material wajib diisi.</div>";return}
+  const ex=[...document.querySelectorAll("#extra input")].filter(i=>i.value.trim()).map(i=>"- "+i.dataset.label+": "+i.value.trim()).join("
+");
+  const data=`Jenis transaksi: ${mode==='ekspor'?'EKSPOR dari Indonesia (isian Negara asal di bawah adalah NEGARA TUJUAN)':'IMPOR ke Indonesia'}
+Nama barang: ${nama}
+Material: ${mat}
+Ukuran/dimensi/berat: ${$("ukuran").value||"-"}
+Fungsi: ${$("fungsi").value||"-"}
+Negara asal: ${$("negara").value||"-"}
+Kategori: ${kat.value}
+Bentuk/kondisi: ${$("kondisi").value}
+Spesifikasi tambahan:
+${ex||"-"}
+Catatan: ${$("catatan").value||"-"}`;
+  const btn=$("go");btn.disabled=true;btn.textContent="Menganalisis…";
+  $("out").innerHTML="<div class='card'>Menganalisis klasifikasi, mohon tunggu…</div>";
+  try{
+    const sample=await claude.use("sample");
+    if(!sample){$("out").innerHTML="<div class='card err'>Fitur analisis AI tidak tersedia di tampilan ini. Buka halaman melalui akun Claude Anda.</div>";return}
+    if(ctl)ctl.abort();ctl=new AbortController();
+    const res=await sample.json((mode==='ekspor'?SYS_EKS:SYS)+"
+
+DATA BARANG:
+"+data,{signal:ctl.signal,modelTier:"default"});
+    render(res);afterResult(res);
+  }catch(e){
+    const m=e&&e.code==="not_granted"?"Izin ditolak. Izinkan akses agar analisis dapat berjalan.":e&&e.code==="rate_limited"?"Terlalu banyak permintaan, coba lagi sebentar lagi.":"Gagal memproses hasil. Coba lagi atau lengkapi data barang.";
+    $("out").innerHTML="<div class='card err'>"+esc(m)+"</div>";
+  }finally{btn.disabled=false;btn.textContent="🔍 Identifikasi HS Code"}
+};
+const N='\n';
+const num=id=>{const v=parseFloat(String($(id).value).replace(',','.'));return isNaN(v)?0:v};
+const idr=n=>'Rp'+Math.round(n).toLocaleString('id-ID');
+const CI=['c_fob','c_cur','c_kurs','c_frt','c_ins','c_bm','c_bmad','c_ppn','c_pph'];
+let last=null,calcRes=null;
+const HK='hsfinder_hist_v1';
+function hget(){try{return JSON.parse(localStorage.getItem(HK)||'[]')||[]}catch(e){return[]}}
+function hset(a){try{localStorage.setItem(HK,JSON.stringify(a))}catch(e){}}
+function hupd(en){const a=hget(),i=a.findIndex(x=>x.t===en.t);if(i>=0){a[i]=en;hset(a)}}
+function snapshot(){const g=id=>$(id).value.trim();return{nama:g('nama'),material:g('material'),ukuran:g('ukuran'),fungsi:g('fungsi'),negara:g('negara'),catatan:g('catatan'),kategori:kat.value,kondisi:$('kondisi').value,mode:mode,extra:[...document.querySelectorAll('#extra input')].map(i=>[i.dataset.label,i.value.trim()])}}
+function syncCur(){$('c_kurs').disabled=$('c_cur').value==='IDR'}
+function autoBM(r){const k=r&&r.kandidat&&r.kandidat[0],t=k?String(k.tarif_bm||''):'',m=/([0-9]+(?:[.,][0-9]+)?) *%/.exec(t);$('bmhint').textContent=m?(mode==='ekspor'?'BK':'BM')+' terisi otomatis dari kandidat teratas ('+m[1]+'%). Verifikasi tarifnya di INSW/PMK dan tarif preferensi FTA.':(mode==='ekspor'?'Isi tarif Bea Keluar sesuai PMK; kosongkan bila tidak dikenai BK.':'Isi tarif BM sesuai BTKI/INSW.');if(m)$('c_bm').value=m[1].replace(',','.')}
+function hitung(){const cur=$('c_cur').value,kurs=cur==='IDR'?1:num('c_kurs'),fob=num('c_fob');if(!fob||!kurs){$('c_out').innerHTML='<div class=err>Isi nilai barang dan kurs (NDPBM) terlebih dahulu.</div>';return}if(mode==='ekspor'){const v=fob*kurs,bk=v*num('c_bm')/100,pl=v*num('c_bmad')/100,tot=bk+pl,rows=[['Nilai ekspor (FOB)',v],['Bea Keluar (BK)',bk],['Pungutan ekspor lain',pl],['PPN ekspor (0%)',0]],sum=[['Total pungutan ekspor',tot,1],['Nilai bersih setelah pungutan',v-tot,0]];calcRes={rows:rows,sum:sum};$('c_out').innerHTML=tblHtml(rows,sum)+'<div class=kv>PPN ekspor barang kena pajak umumnya 0%. Estimasi saja: sebagian BK berbasis tarif spesifik atau harga referensi (mis. sawit, mineral), dan tarif wajib dicek ulang di PMK terbaru.</div>';if(last){last.calcIn=Object.fromEntries(CI.map(k=>[k,$(k).value]));hupd(last)}return}const cif=(fob+num('c_frt')+num('c_ins'))*kurs,bm=cif*num('c_bm')/100,ad=cif*num('c_bmad')/100,dpp=cif+bm+ad,ppn=dpp*num('c_ppn')/100,pph=dpp*num('c_pph')/100,tot=bm+ad+ppn+pph;const rows=[['Nilai pabean (CIF)',cif],['Bea Masuk (BM)',bm],['BMAD/BMTP/lainnya',ad],['PPN impor',ppn],['PPh Pasal 22 impor',pph]];const sum=[['Total pungutan (BM + PPN + PPh 22)',tot,1],['Biaya impor efektif bila PPN dan PPh 22 dikreditkan (CIF + BM)',cif+bm+ad,0],['Biaya mendarat tanpa kredit pajak (CIF + total pungutan)',cif+tot,0]];calcRes={rows:rows,sum:sum};$('c_out').innerHTML='<table class=tbl>'+rows.map(r=>'<tr><td>'+r[0]+'</td><td>'+idr(r[1])+'</td></tr>').join('')+sum.map(r=>'<tr class='+(r[2]?'t':'s')+'><td>'+r[0]+'</td><td>'+idr(r[1])+'</td></tr>').join('')+'</table><div class=kv style="color:var(--muted)">Dasar PPN dan PPh 22 = CIF + BM + BMAD. Estimasi saja, tidak termasuk cukai/PPnBM; kurs dan tarif wajib dicek ulang.</div>';if(last){last.calcIn=Object.fromEntries(CI.map(k=>[k,$(k).value]));hupd(last)}}
+function toMd(){if(!last)return'';const f=last.form,r=last.res;let s='# Laporan Klasifikasi HS Code ('+(f.mode==='ekspor'?'Ekspor':'Impor')+')'+N+N+'_'+new Date(last.t).toLocaleString('id-ID')+'_'+N+N+'## Data barang'+N+'- Nama: '+f.nama+N+'- Material: '+f.material+N+'- Ukuran: '+(f.ukuran||'-')+N+'- Fungsi: '+(f.fungsi||'-')+N+'- Negara '+(f.mode==='ekspor'?'tujuan':'asal')+': '+(f.negara||'-')+N+'- Kategori: '+f.kategori+N+'- Kondisi: '+f.kondisi+N;f.extra.forEach(x=>{if(x[1])s+='- '+x[0]+': '+x[1]+N});s+=N+'## Ringkasan'+N+r.ringkasan+N+N+'## Kandidat HS Code'+N;(r.kandidat||[]).forEach((c,i)=>{s+=N+'### '+(i+1)+'. '+c.hs_code+' ('+c.keyakinan+'%)'+N+c.uraian+N+'- Alasan: '+c.alasan+N+'- Dasar GRI: '+c.gri+N+'- Pembeda: '+c.pembeda+N+'- '+(f.mode==='ekspor'?'Bea Keluar':'BM')+' indikatif: '+c.tarif_bm+N});const L=(t,a)=>a&&a.length?N+'## '+t+N+a.map(x=>'- '+x).join(N)+N:'';s+=N+'## Catatan Bab/Section'+N+(r.bab_catatan||'-')+N+L('Kemungkinan Lartas',r.lartas)+L('Dokumen',r.dokumen)+L('Info tambahan',r.pertanyaan_lanjutan);if(calcRes&&last.calcIn){s+=N+'## Estimasi pungutan '+(f.mode==='ekspor'?'ekspor':'impor')+N;calcRes.rows.concat(calcRes.sum).forEach(x=>{s+='- '+x[0]+': '+idr(x[1])+N})}return s+N+'---'+N+'Rekomendasi awal, bukan penetapan resmi. Verifikasi di insw.go.id.'+N}
+const Q=String.fromCharCode(34);
+function toCsv(){const f=last.form,r=last.res,q=v=>Q+String(v==null?'':v).split(Q).join(Q+Q)+Q,d=new Date(last.t).toISOString().slice(0,10);const H=['Tanggal','Nama barang','Material','Negara asal/tujuan','Peringkat','HS Code','Uraian','Keyakinan %','BM/BK indikatif','Alasan'];const rows=(r.kandidat||[]).map((c,i)=>[d,f.nama,f.material,f.negara,i+1,c.hs_code,c.uraian,c.keyakinan,c.tarif_bm,c.alasan]);return String.fromCharCode(65279)+[H].concat(rows).map(x=>x.map(q).join(',')).join(N)}
+async function simpan(ext,data){const msg=$('exmsg');msg.textContent='';const nm='hs-code-'+((last.form.nama||'').toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'').slice(0,40)||'barang')+'.'+ext;try{const dl=await claude.use('downloads');if(!dl){msg.textContent='Unduhan tidak tersedia di tampilan ini.';return}await dl.save({filename:nm,data:data});msg.textContent='Tersimpan.'}catch(e){msg.textContent=e&&e.code==='declined'?'':'Gagal menyimpan file.'}}
+function hrender(){const a=hget(),box=$('hist');$('histcard').style.display=a.length?'':'none';box.textContent='';a.forEach(h=>{const d=document.createElement('div');d.className='hitem';const k=h.res&&h.res.kandidat&&h.res.kandidat[0],b=document.createElement('button');b.className='hbtn';b.textContent=(h.form.mode==='ekspor'?'📤 ':'📥 ')+h.form.nama+' — '+(k?k.hs_code:'-')+' · '+new Date(h.t).toLocaleDateString('id-ID');b.onclick=()=>restore(h);const x=document.createElement('button');x.className='hx';x.textContent='✕';x.title='Hapus';x.onclick=()=>{hset(hget().filter(z=>z.t!==h.t));hrender()};d.appendChild(b);d.appendChild(x);box.appendChild(d)})}
+function restore(h){const f=h.form;setMode(f.mode||'impor',true);['nama','material','ukuran','fungsi','negara','catatan'].forEach(k=>{$(k).value=f[k]||''});$('kondisi').value=f.kondisi;kat.value=f.kategori;renderExtra();(f.extra||[]).forEach((v,i)=>{const e=$('x'+i);if(e)e.value=v[1]});last=h;calcRes=null;$('c_out').textContent='';$('exp').style.display='flex';render(h.res);autoBM(h.res);if(h.calcIn){CI.forEach(k=>{$(k).value=h.calcIn[k]});syncCur();hitung()}}
+function afterResult(res){last={t:Date.now(),form:snapshot(),res:res};calcRes=null;$('c_out').textContent='';$('exp').style.display='flex';autoBM(res);const a=hget();a.unshift(last);hset(a.slice(0,30));hrender()}
+$('c_cur').onchange=syncCur;$('c_go').onclick=hitung;
+$('dlmd').onclick=()=>{if(last)simpan('md',toMd())};$('dlcsv').onclick=()=>{if(last)simpan('csv',toCsv())};
+$('hclear').onclick=()=>{hset([]);hrender()};
+hrender();
+const SYS_EKS=`Anda adalah konsultan ekspor dan kepabeanan senior di Indonesia yang ahli klasifikasi barang menurut Harmonized System dan BTKI (8 digit) untuk keperluan EKSPOR dari Indonesia (PEB). Tugas: tentukan HS Code paling tepat untuk barang yang dijelaskan pengguna dengan GRI 1-6, Section/Chapter Notes, dan Explanatory Notes. Aturan:
+- Beri 1 sampai 3 kandidat, urut dari paling mungkin, format XXXX.XX.XX (8 digit BTKI). HS internasional seragam hanya sampai 6 digit; negara tujuan memakai pos tarif nasionalnya sendiri, jadi tegaskan 6 digit sebagai acuan untuk tarif impor di negara tujuan.
+- Jangan mengarang. Bila data kurang, turunkan keyakinan dan isi pertanyaan_lanjutan.
+- Untuk bidang tarif_bm, isi dengan informasi BEA KELUAR (BK) indikatif dan pungutan ekspor lain (mis. sawit, kakao, kulit, mineral/konsentrat) bila relevan, atau tulis bahwa umumnya tidak dikenakan BK dan perlu dicek di PMK terbaru/INSW. Sebutkan juga peluang tarif preferensi (FTA) di negara tujuan dan perlunya SKA (surat keterangan asal).
+- Untuk lartas, bahas ketentuan ekspor: larangan/pembatasan ekspor (Permendag), Eksportir Terdaftar atau Persetujuan Ekspor, SVLK/V-Legal untuk produk kayu, CITES untuk tumbuhan/satwa, sertifikat karantina/kesehatan/mutu, Laporan Surveyor untuk mineral dan batubara, serta kewajiban devisa hasil ekspor sumber daya alam. Tandai sebagai kemungkinan.
+- Untuk dokumen, sebutkan PEB, invoice, packing list, B/L atau AWB, SKA, dan dokumen khusus komoditas.
+`+SYS.slice(SYS.indexOf('- Jawab dalam'));
+function tblHtml(rows,sum){return '<table class=tbl>'+rows.map(r=>'<tr><td>'+r[0]+'</td><td>'+idr(r[1])+'</td></tr>').join('')+sum.map(r=>'<tr class='+(r[2]?'t':'s')+'><td>'+r[0]+'</td><td>'+idr(r[1])+'</td></tr>').join('')+'</table>'}
+let mode='impor';
+function setMode(m,keep){mode=m;const e=m==='ekspor';$('m_impor').className=e?'':'on';$('m_ekspor').className=e?'on':'';$('lbl_negara').textContent=e?'Negara tujuan':'Negara asal';$('calctitle').textContent=e?'Kalkulator estimasi bea keluar & pungutan ekspor':'Kalkulator estimasi bea masuk & pajak impor';['c_frt','c_ins','c_ppn','c_pph'].forEach(id=>{$(id).parentElement.style.display=e?'none':''});$('c_fob').previousElementSibling.textContent=e?'Nilai ekspor (FOB)':'Nilai barang (FOB)';$('c_bm').previousElementSibling.textContent=e?'Bea Keluar (%)':'BM (%)';$('c_bmad').previousElementSibling.textContent=e?'Pungutan ekspor lain (%)':'BMAD/BMTP/lainnya (%)';$('bmhint').textContent=e?'Isi tarif Bea Keluar sesuai PMK; kosongkan bila tidak dikenai BK. Tarif spesifik (mis. sawit) dihitung dengan cara berbeda.':'Isi tarif BM sesuai BTKI/INSW. Setelah identifikasi, BM terisi otomatis dari kandidat teratas.';$('c_out').textContent='';if(!keep){$('out').textContent='';$('exp').style.display='none';last=null;calcRes=null;$('c_bm').value=''}}
+$('m_impor').onclick=()=>setMode('impor');$('m_ekspor').onclick=()=>setMode('ekspor');
+(function(){const w=document.querySelector('.wrap'),form=w.querySelector(':scope > .card:not(#calc):not(#histcard)'),box=document.createElement('div'),L=document.createElement('div'),R=document.createElement('div');box.className='layout';L.className='colL';R.className='colR';form.id='formcard';form.before(box);box.append(L,R);L.append(form,$('histcard'));R.append($('out'),$('exp'),$('calc'));$('go').parentElement.classList.add('actbar')})();
+</script>
+<script>
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('sw.js');
+}
+</script>
+</body>
+</html>
