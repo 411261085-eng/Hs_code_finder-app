@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-<link rel="manifest" href="manifest.json">
-<meta name="theme-color" content="#0b5fa5">
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#0b5fa5">
 <title>HS Code Finder – Konsultan Impor Indonesia</title>
 <style>
 :root{--bg:#f6f7f9;--card:#fff;--text:#1b2430;--muted:#5d6b7c;--line:#dde2e9;--accent:#0b5fa5;--accent-t:#fff;--soft:#e8f1fa;--ok:#1d7a46;--warn:#9a6200;--warnbg:#fff4de;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);color-scheme:light}
@@ -162,6 +162,7 @@ $("contoh").onclick=()=>{
   $("x0").value="Tidak ada kayu";$("x2").value="Dirakit sebagian, dikemas terpisah";
 };
 
+const N=String.fromCharCode(10);
 const SYS=`Anda adalah konsultan kepabeanan dan importir senior di Indonesia yang ahli klasifikasi barang menurut Harmonized System dan BTKI (Buku Tarif Kepabeanan Indonesia, 8 digit, berbasis AHTN). Tugas: tentukan HS Code paling tepat untuk barang yang dijelaskan pengguna, dengan menerapkan General Rules of Interpretation (GRI 1-6), Section/Chapter Notes, dan Explanatory Notes. Aturan:
 - Beri 1 sampai 3 kandidat, urut dari paling mungkin. Format kode "XXXX.XX.XX" (8 digit BTKI). Jika tidak yakin pada 8 digit, tulis yang yakin dan jelaskan di bidang "pembeda".
 - Jangan mengarang. Jika data kurang untuk menentukan, turunkan keyakinan dan isi "pertanyaan_lanjutan" dengan pertanyaan spesifik yang akan mengubah klasifikasi.
@@ -195,36 +196,21 @@ let ctl=null;
 $("go").onclick=async()=>{
   const nama=$("nama").value.trim(),mat=$("material").value.trim();
   if(!nama||!mat){$("out").innerHTML="<div class='card err'>Nama barang dan material wajib diisi.</div>";return}
-  const ex=[...document.querySelectorAll("#extra input")].filter(i=>i.value.trim()).map(i=>"- "+i.dataset.label+": "+i.value.trim()).join("
-");
-  const data=`Jenis transaksi: ${mode==='ekspor'?'EKSPOR dari Indonesia (isian Negara asal di bawah adalah NEGARA TUJUAN)':'IMPOR ke Indonesia'}
-Nama barang: ${nama}
-Material: ${mat}
-Ukuran/dimensi/berat: ${$("ukuran").value||"-"}
-Fungsi: ${$("fungsi").value||"-"}
-Negara asal: ${$("negara").value||"-"}
-Kategori: ${kat.value}
-Bentuk/kondisi: ${$("kondisi").value}
-Spesifikasi tambahan:
-${ex||"-"}
-Catatan: ${$("catatan").value||"-"}`;
+  const ex=[...document.querySelectorAll("#extra input")].filter(i=>i.value.trim()).map(i=>"- "+i.dataset.label+": "+i.value.trim()).join(N);
+  const data=`Jenis transaksi: ${mode==='ekspor'?'EKSPOR dari Indonesia (isian Negara asal di bawah adalah NEGARA TUJUAN)':'IMPOR ke Indonesia'}${N}Nama barang: ${nama}${N}Material: ${mat}${N}Ukuran/dimensi/berat: ${$("ukuran").value||"-"}${N}Fungsi: ${$("fungsi").value||"-"}${N}Negara asal: ${$("negara").value||"-"}${N}Kategori: ${kat.value}${N}Bentuk/kondisi: ${$("kondisi").value}${N}Spesifikasi tambahan:${N}${ex||"-"}${N}Catatan: ${$("catatan").value||"-"}`;
   const btn=$("go");btn.disabled=true;btn.textContent="Menganalisis…";
   $("out").innerHTML="<div class='card'>Menganalisis klasifikasi, mohon tunggu…</div>";
   try{
     const sample=await claude.use("sample");
     if(!sample){$("out").innerHTML="<div class='card err'>Fitur analisis AI tidak tersedia di tampilan ini. Buka halaman melalui akun Claude Anda.</div>";return}
     if(ctl)ctl.abort();ctl=new AbortController();
-    const res=await sample.json((mode==='ekspor'?SYS_EKS:SYS)+"
-
-DATA BARANG:
-"+data,{signal:ctl.signal,modelTier:"default"});
+    const res=await sample.json((mode==='ekspor'?SYS_EKS:SYS)+N+N+"DATA BARANG:"+N+data,{signal:ctl.signal,modelTier:"default"});
     render(res);afterResult(res);
   }catch(e){
     const m=e&&e.code==="not_granted"?"Izin ditolak. Izinkan akses agar analisis dapat berjalan.":e&&e.code==="rate_limited"?"Terlalu banyak permintaan, coba lagi sebentar lagi.":"Gagal memproses hasil. Coba lagi atau lengkapi data barang.";
     $("out").innerHTML="<div class='card err'>"+esc(m)+"</div>";
   }finally{btn.disabled=false;btn.textContent="🔍 Identifikasi HS Code"}
 };
-const N='\n';
 const num=id=>{const v=parseFloat(String($(id).value).replace(',','.'));return isNaN(v)?0:v};
 const idr=n=>'Rp'+Math.round(n).toLocaleString('id-ID');
 const CI=['c_fob','c_cur','c_kurs','c_frt','c_ins','c_bm','c_bmad','c_ppn','c_pph'];
